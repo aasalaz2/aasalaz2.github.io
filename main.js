@@ -41,19 +41,34 @@ d3.csv("popular_anime.csv").then(data => {
 
 // Renders Scene
 function renderScene(sceneNumber) {
-    svg.selectAll("*").remove();    // Clears canvas
+    // svg.selectAll("*").remove();    // Clears canvas
+    svg.selectAll("g.sceneGroup")
+        .transition()
+        .duration(500)
+        .style("opacity", 0)
+        .remove();
+
+    svg.selectAll("text").transition().duration(500).style("opacity", 0).remove();
 
     // Hide genre selector unless in Scene 4
     d3.select("#genreSelector").style("display", "none");
 
     if (sceneNumber === 0) {
-        const margin = { top: 120, right: 20, bottom: 60, left: 360 };
+        // const margin = { top: 120, right: 20, bottom: 60, left: 360 };
+        const margin = { top: 80, right: 20, bottom: 60, left: 360 };
         const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
         const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
 
 
+        // const g = svg.append("g")
+        //     .attr("transform", `translate(${margin.left},${margin.top})`);
         const g = svg.append("g")
+            .attr("class", "sceneGroup")
+            .style("opacity", 0)
             .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        g.transition().duration(500).style("opacity", 1);
+
 
         const yearLabel = svg.append("text")
             .attr("id", "yearLabel")
@@ -158,7 +173,14 @@ function renderScene(sceneNumber) {
         const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
         const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
 
-        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        // const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        const g = svg.append("g")
+            .attr("class", "sceneGroup")
+            .style("opacity", 0)
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        g.transition().duration(500).style("opacity", 1);
+
 
         // Group by year
         const topPerYear = [];
@@ -254,7 +276,15 @@ function renderScene(sceneNumber) {
         const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
         const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
 
-        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        // const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const g = svg.append("g")
+            .attr("class", "sceneGroup")
+            .style("opacity", 0)
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        g.transition().duration(500).style("opacity", 1);
+
 
         // Get average score per genre
         const genreData = new Map();
@@ -362,10 +392,18 @@ function renderScene(sceneNumber) {
             .text("Average Rating by Genre");
     }
     else if (sceneNumber === 3) {
-        const margin = { top: 120, right: 20, bottom: 60, left: 360 };
+        // const margin = { top: 120, right: 20, bottom: 60, left: 360 };
+        const margin = { top: 80, right: 20, bottom: 60, left: 360 };
         const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
         const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
-        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        // const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        const g = svg.append("g")
+            .attr("class", "sceneGroup")
+            .style("opacity", 0)
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        g.transition().duration(500).style("opacity", 1);
+
 
         // Extract all genres from animeData
         const genreSet = new Set();
@@ -501,26 +539,59 @@ function renderScene(sceneNumber) {
 
 // Consider adding a scrolling wheel transition, instead of buttons
 
-// Previous Button Logic
-d3.select("#prevButton").on("click", () => {
+function flashArrow(selector) {
+    const arrow = d3.select(selector);
+    arrow.classed("clicked", true);
+    setTimeout(() => arrow.classed("clicked", false), 200);
+}
+
+
+d3.select("#navLeft").on("click", () => {
     if (currentScene > 0) {
         currentScene -= 1;
+        flashArrow("#navLeft");
         renderScene(currentScene);
     }
     else {
         currentScene = totalScenes - 1;
+        flashArrow("#navLeft");
         renderScene(currentScene);
     }
 });
 
-// Next Button Logic
-d3.select("#nextButton").on("click", () => {
+d3.select("#navRight").on("click", () => {
     if (currentScene < totalScenes - 1) {
         currentScene += 1;
+        flashArrow("#navRight");
         renderScene(currentScene);
     }
     else {
         currentScene = 0;
+        flashArrow("#navRight");
         renderScene(currentScene);
     }
-})
+});
+
+// Previous Button Logic
+// d3.select("#prevButton").on("click", () => {
+//     if (currentScene > 0) {
+//         currentScene -= 1;
+//         renderScene(currentScene);
+//     }
+//     else {
+//         currentScene = totalScenes - 1;
+//         renderScene(currentScene);
+//     }
+// });
+
+// // Next Button Logic
+// d3.select("#nextButton").on("click", () => {
+//     if (currentScene < totalScenes - 1) {
+//         currentScene += 1;
+//         renderScene(currentScene);
+//     }
+//     else {
+//         currentScene = 0;
+//         renderScene(currentScene);
+//     }
+// })
