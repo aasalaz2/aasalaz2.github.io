@@ -54,10 +54,22 @@ function renderScene(sceneNumber) {
     d3.select("#genreSelector").style("display", "none");
 
     if (sceneNumber === 0) {
-        // const margin = { top: 120, right: 20, bottom: 60, left: 360 };
-        const margin = { top: 80, right: 20, bottom: 60, left: 360 };
-        const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
-        const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+        // const margin = { top: 80, right: 20, bottom: 60, left: 360 };
+        // const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
+        // const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+        const bounds = svg.node().getBoundingClientRect();
+
+        const margin = {
+            top: bounds.height * 0.1,
+            right: bounds.width * 0.05,
+            bottom: bounds.height * 0.1,
+            left: bounds.width * 0.25
+        };
+
+        const width = 1200 - margin.left - margin.right;
+        const height = 700 - margin.top - margin.bottom;
+
 
 
         // const g = svg.append("g")
@@ -73,7 +85,7 @@ function renderScene(sceneNumber) {
         const yearLabel = svg.append("text")
             .attr("id", "yearLabel")
             .attr("text-anchor", "middle")
-            .attr("x", svg.attr("width") / 2)
+            .attr("x", 600)
             .attr("y", 40)
             .attr("font-size", "24px")
             .attr("font-weight", "bold")
@@ -169,9 +181,22 @@ function renderScene(sceneNumber) {
         step();
     }
     else if (sceneNumber === 1) {
-        const margin = { top: 60, right: 20, bottom: 60, left: 80 };
-        const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
-        const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+        // const margin = { top: 60, right: 20, bottom: 60, left: 80 };
+        // const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
+        // const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+        const bounds = svg.node().getBoundingClientRect();
+
+        const margin = {
+            top: bounds.height * 0.1,
+            right: bounds.width * 0.05,
+            bottom: bounds.height * 0.1,
+            left: bounds.width * 0.25
+        };
+
+        const width = 1200 - margin.left - margin.right;
+        const height = 700 - margin.top - margin.bottom;
+
 
         // const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
         const g = svg.append("g")
@@ -262,7 +287,7 @@ function renderScene(sceneNumber) {
 
         // Set title
         svg.append("text")
-            .attr("x", svg.attr("width") / 2)
+            .attr("x", 600)
             .attr("y", 40)
             .attr("text-anchor", "middle")
             .attr("font-size", "24px")
@@ -272,9 +297,22 @@ function renderScene(sceneNumber) {
 
     }
     else if (sceneNumber === 2) {
-        const margin = { top: 80, right: 60, bottom: 60, left: 200 };
-        const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
-        const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+        // const margin = { top: 80, right: 60, bottom: 60, left: 200 };
+        // const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
+        // const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+        const bounds = svg.node().getBoundingClientRect();
+
+        const margin = {
+            top: bounds.height * 0.1,
+            right: bounds.width * 0.05,
+            bottom: bounds.height * 0.1,
+            left: bounds.width * 0.25
+        };
+
+        const width = 1200 - margin.left - margin.right;
+        const height = 700 - margin.top - margin.bottom;
+
 
         // const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -383,7 +421,7 @@ function renderScene(sceneNumber) {
             .text(d => d.avgScore.toFixed(2));
 
         svg.append("text")
-            .attr("x", svg.attr("width") / 2)
+            .attr("x", 600)
             .attr("y", 40)
             .attr("text-anchor", "middle")
             .attr("font-size", "24px")
@@ -392,11 +430,24 @@ function renderScene(sceneNumber) {
             .text("Average Rating by Genre");
     }
     else if (sceneNumber === 3) {
-        // const margin = { top: 120, right: 20, bottom: 60, left: 360 };
-        const margin = { top: 80, right: 20, bottom: 60, left: 360 };
-        const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
-        const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
-        // const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        // const margin = { top: 80, right: 20, bottom: 60, left: 360 };
+        // const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
+        // const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+        const bounds = svg.node().getBoundingClientRect();
+
+        const margin = {
+            top: bounds.height * 0.1,
+            right: bounds.width * 0.05,
+            bottom: bounds.height * 0.1,
+            left: bounds.width * 0.25
+        };
+
+        const width = 1200 - margin.left - margin.right;
+        const height = 700 - margin.top - margin.bottom;
+
+
+
         const g = svg.append("g")
             .attr("class", "sceneGroup")
             .style("opacity", 0)
@@ -526,7 +577,7 @@ function renderScene(sceneNumber) {
             svg.selectAll(".scene4-title").remove();
             svg.append("text")
                 .attr("class", "scene4-title")
-                .attr("x", svg.attr("width") / 2)
+                .attr("x", 600)
                 .attr("y", 40)
                 .attr("text-anchor", "middle")
                 .attr("font-size", "24px")
@@ -571,6 +622,12 @@ d3.select("#navRight").on("click", () => {
         renderScene(currentScene);
     }
 });
+
+window.addEventListener("resize", () => {
+    svg.selectAll("*").remove();
+    renderScene(currentScene);
+});
+
 
 // Previous Button Logic
 // d3.select("#prevButton").on("click", () => {
