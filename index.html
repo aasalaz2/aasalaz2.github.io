@@ -1,0 +1,107 @@
+ <!DOCTYPE html>
+ <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>40 Years of Anime - A Narrative Visualization</title>
+
+        <!-- D3.js v7 -->
+        <script src='https://d3js.org/d3.v7.min.js'></script>
+        <!-- d3-annotation -->
+        <script src="https://unpkg.com/d3-annotation@2.5.1/d3-annotation.min.js"></script>
+        <!-- TopoJSON Client -->
+        <script src="https://unpkg.com/topojson-client@3"></script>
+
+        <!-- Style Below?? -->
+         <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                margin: 0;
+                background-color: #fafafa;
+                color: #333;
+            }
+
+            header {
+                padding: 1em;
+                text-align: center;
+                background-color: #2f51a3;  /* Change this */
+                color: #fefffb;
+            }
+
+            #chart-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2em;
+                flex-direction: column;
+                position: relative;
+            }
+
+            svg {
+                border: 1px solid #ccc;
+                background: white;
+            }
+
+            #controls {
+                text-align: center;
+                margin: 3em 0 1em 0;
+                /* margin-bottom: 1em; */
+            }
+
+            button {
+                padding: 0.5em 1em;
+                margin: 0 0.5em;
+                font-size: 1em;
+                cursor: pointer;
+            }
+            
+            .annotation {
+                font-size: 0.9em;
+                fill: #555;
+            }
+
+            #tooltip {
+                position: absolute;
+                pointer-events: none;
+                background: white;
+                border: 1px solid #aaa;
+                padding: 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+                opacity: 0;
+                z-index: 9999;
+            }
+
+            #genreSelector {
+                display: none;
+                font-size: 14px;
+                padding: 4px;
+                margin-left: 1em;
+                margin-right: 1em;
+            }
+
+         </style>
+    </head>
+    <body>
+        <header>
+            <h1>40 Years of Anime - A Narrative Visualization</h1>
+        </header>
+
+        <div id="controls">
+            <button id="prevButton">Previous</button>
+            <select id="genreSelector"></select>
+            <button id="nextButton">Next</button>
+        </div>
+
+        <div id="chart-container">
+            <!-- <select id="genreSelector"></select> -->
+            <svg id="chart" width="1200" height="700"></svg>
+            <div id="tooltip" style="position: absolute; opacity: 0; background: white; border: 1px solid #ccc; padding: 0.5em; pointer-events: none; font-size: 0.9em; border-radius: 5px;"></div>
+        </div>
+
+        <script src="main.js"></script>
+
+    </body>
+
+ </html>
