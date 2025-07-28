@@ -189,9 +189,9 @@ function renderScene(sceneNumber) {
 
         const margin = {
             top: bounds.height * 0.1,
-            right: bounds.width * 0.05,
+            right: bounds.width * 0.1,
             bottom: bounds.height * 0.1,
-            left: bounds.width * 0.25
+            left: bounds.width * 0.1
         };
 
         const width = 1200 - margin.left - margin.right;
@@ -251,8 +251,8 @@ function renderScene(sceneNumber) {
                     tooltip.transition().duration(200).style("opacity", 0.95);
 
                     // Offset the tooltip to appear bottom-right of the cursor
-                    const offsetX = 10;
-                    const offsetY = 290;
+                    const offsetX = 15;
+                    const offsetY = 55;
 
                     const left = event.pageX + offsetX;
                     const top = event.pageY - offsetY;
@@ -305,9 +305,9 @@ function renderScene(sceneNumber) {
 
         const margin = {
             top: bounds.height * 0.1,
-            right: bounds.width * 0.05,
+            right: bounds.width * 0.1,
             bottom: bounds.height * 0.1,
-            left: bounds.width * 0.25
+            left: bounds.width * 0.15
         };
 
         const width = 1200 - margin.left - margin.right;
@@ -377,11 +377,11 @@ function renderScene(sceneNumber) {
                 );
             })
             .on("mousemove", function(event) {
-                const offsetX = 5;
-                const offsetY = 280;
+                    const offsetX = 15;
+                    const offsetY = 55;
 
-                const left = event.pageX + offsetX;
-                const top = event.pageY - offsetY;
+                    const left = event.pageX + offsetX;
+                    const top = event.pageY - offsetY;
 
                 tooltip
                     .style("left", `${left}px`)
@@ -530,8 +530,8 @@ function renderScene(sceneNumber) {
                     );
                 })
                 .on("mousemove", function(event) {
-                    const offsetX = 5;
-                    const offsetY = 300;
+                    const offsetX = 15;
+                    const offsetY = 55;
 
                     const left = event.pageX + offsetX;
                     const top = event.pageY - offsetY;
