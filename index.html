@@ -35,7 +35,7 @@
                 /* width: 90vw; */
                 /* height: 70vh; */
                 max-width: 1600px;
-                max-height: 1000px;
+                max-height: 800px;
                 margin: auto;
                 padding: 2em;
                 position: relative;
@@ -140,6 +140,24 @@
                 transform: translateY(-50%) scale(1.2);
             }
 
+            #scene-popup {
+                position: fixed;
+                top: 40%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 16px 24px;
+                background-color: #2f51a3;
+                color: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+                font-size: 16px;
+                font-weight: 500;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 10000;
+                transition: opacity 0.4s ease;
+            }
+
 
 
          </style>
@@ -166,6 +184,8 @@
 
 
         <script src="main.js"></script>
+
+        <div id="scene-popup"></div>
 
     </body>
 

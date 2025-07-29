@@ -38,6 +38,24 @@ d3.csv("popular_anime.csv").then(data => {
     renderScene(currentScene);
 });
 
+function showScenePopup(message) {
+    const popup = d3.select("#scene-popup");
+
+    popup.text(message)
+         .style("display", "block")
+         .style("opacity", 0);
+
+    popup.transition()
+        .duration(400)
+        .style("opacity", 1)
+        .transition()
+        .delay(2500)
+        .duration(400)
+        .style("opacity", 0)
+        .on("end", () => popup.style("display", "none"));
+}
+
+
 
 // Renders Scene
 function renderScene(sceneNumber) {
@@ -295,6 +313,9 @@ function renderScene(sceneNumber) {
             .attr("fill", "#444")
             .text("Rating vs Popularity of Top 10 Anime Per Year");
 
+        showScenePopup("Hover over each dot to explore anime.");
+
+
     }
     else if (sceneNumber === 2) {
         // const margin = { top: 80, right: 60, bottom: 60, left: 200 };
@@ -428,6 +449,9 @@ function renderScene(sceneNumber) {
             .attr("font-weight", "bold")
             .attr("fill", "#444")
             .text("Average Rating by Genre");
+
+        showScenePopup("Hover over bars to see details.");
+
     }
     else if (sceneNumber === 3) {
         // const margin = { top: 80, right: 20, bottom: 60, left: 360 };
@@ -486,6 +510,8 @@ function renderScene(sceneNumber) {
             updateGenreChart(selectedGenre);
         });
 
+        showScenePopup("Use the dropdown and hover for more info.");
+
         function updateGenreChart(genre) {
             // Clear canvas
             g.selectAll("*").remove();
@@ -523,9 +549,8 @@ function renderScene(sceneNumber) {
                     tooltip.transition().duration(200).style("opacity", 0.95);
 
                     tooltip.html(
-                        `<strong>${d.name}</strong><br/>
+                        `<strong>${d.name} (${d.aired_year})</strong><br/>
                         Score: ${d.score}<br/>
-                        Year: ${d.aired_year}<br/>
                         Popularity: ${d.members.toLocaleString()}`
                     );
                 })
