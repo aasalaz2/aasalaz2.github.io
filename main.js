@@ -4,7 +4,7 @@
 // Scene 4: Explore Animes in Each Genre
 
 let currentScene = 0;
-const totalScenes = 4;
+const totalScenes = 5;
 const svg = d3.select("#chart");
 const tooltip = d3.select("#tooltip");
 let selectedGenre = null;
@@ -34,6 +34,27 @@ d3.csv("popular_anime.csv").then(data => {
     // Extract the years in that range
     window.allYears = Array.from(new Set(window.animeData.map(d => d.aired_year)))
         .sort((a, b) => a - b);
+
+    // Compute popularity data by year
+    const popularityMap = new Map();
+
+    window.animeData.forEach(d => {
+        const year = d.aired_year;
+        if (!popularityMap.has(year)) {
+            popularityMap.set(year, { total: 0, count: 0 });
+        }
+        popularityMap.get(year).total += d.members;
+        popularityMap.get(year).count += 1;
+    });
+
+    window.popularityByYear = Array.from(popularityMap.entries())
+        .map(([year, { total, count }]) => ({
+            year,
+            avg: total / count,
+            total
+        }))
+        .sort((a, b) => a.year - b.year);
+
 
     renderScene(currentScene);
 });
@@ -159,6 +180,7 @@ function renderScene(sceneNumber) {
                     .duration(1000)
                     .attr("y", d => y(d.name) + y.bandwidth() / 2 + 5)
                     .text(d => d.name);
+                    // .text(d => `${d.name} (${d.aired_year})`);
 
             leftLabels.exit().remove();
 
@@ -311,13 +333,13 @@ function renderScene(sceneNumber) {
             .attr("font-size", "24px")
             .attr("font-weight", "bold")
             .attr("fill", "#444")
-            .text("Rating vs Popularity of Top 10 Anime Per Year");
+            .text("Rating vs Popularity of Top Rated Anime Per Year");
 
         showScenePopup("Hover over each dot to explore anime.");
 
 
     }
-    else if (sceneNumber === 2) {
+    else if (sceneNumber === 3) {
         // const margin = { top: 80, right: 60, bottom: 60, left: 200 };
         // const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
         // const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
@@ -453,7 +475,7 @@ function renderScene(sceneNumber) {
         showScenePopup("Hover over bars to see details.");
 
     }
-    else if (sceneNumber === 3) {
+    else if (sceneNumber === 4) {
         // const margin = { top: 80, right: 20, bottom: 60, left: 360 };
         // const width = svg.node().getBoundingClientRect().width - margin.left - margin.right;
         // const height = svg.node().getBoundingClientRect().height - margin.top - margin.bottom;
@@ -611,6 +633,179 @@ function renderScene(sceneNumber) {
                 .text(`Top Rated Anime in Genre: ${genre}`);
         }
     }
+    else if (sceneNumber === 2) {
+        const bounds = svg.node().getBoundingClientRect();
+        const margin = {
+            top: bounds.height * 0.1,
+            right: bounds.width * 0.1,
+            bottom: bounds.height * 0.1,
+            left: bounds.width * 0.1
+        };
+        const width = 1200 - margin.left - margin.right;
+        const height = 700 - margin.top - margin.bottom;
+
+        const g = svg.append("g")
+            .attr("class", "sceneGroup")
+            .style("opacity", 0)
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+        g.transition().duration(500).style("opacity", 1);
+
+        const x = d3.scaleLinear()
+            .domain(d3.extent(window.popularityByYear, d => d.year))
+            .range([0, width]);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(window.popularityByYear, d => d.total)])
+            .nice()
+            .range([height, 0]);
+
+        const y2 = d3.scaleLinear()
+            .domain([0, d3.max(window.popularityByYear, d => d.avg)])
+            .nice()
+            .range([height, 0]);
+
+        const xAxis = d3.axisBottom(x).tickFormat(d3.format("d"));
+        const yAxisLeft = d3.axisLeft(y);
+        const yAxisRight = d3.axisRight(y2);
+
+        g.append("g")
+            .attr("transform", `translate(0, ${height})`)
+            .call(xAxis);
+
+        g.append("g")
+            .call(yAxisLeft);
+
+        g.append("g")
+            .attr("transform", `translate(${width}, 0)`)
+            .call(yAxisRight);
+
+        const lineTotal = d3.line()
+            .x(d => x(d.year))
+            .y(d => y(d.total));
+
+        const lineAvg = d3.line()
+            .x(d => x(d.year))
+            .y(d => y2(d.avg));
+
+        g.append("path")
+            .datum(window.popularityByYear)
+            .attr("fill", "none")
+            .attr("stroke", "#2f51a3")
+            .attr("stroke-width", 2)
+            .attr("d", lineTotal);
+
+        g.append("path")
+            .datum(window.popularityByYear)
+            .attr("fill", "none")
+            .attr("stroke", "orange")
+            .attr("stroke-width", 2)
+            .attr("d", lineAvg);        
+
+        // Add an invisible rect to track mouse
+        g.append("rect")
+            .attr("class", "hover-rect")
+            .attr("width", width)
+            .attr("height", height)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .on("mousemove", function(event) {
+                const [mouseX] = d3.pointer(event);
+                const yearScale = d3.scaleLinear()
+                    .domain(d3.extent(window.popularityByYear, d => d.year))
+                    .range([0, width]);
+
+                const invertedYear = Math.round(x.invert(mouseX));
+                const closest = window.popularityByYear.find(d => d.year === invertedYear);
+                if (!closest) return;
+
+                tooltip.transition().duration(100).style("opacity", 0.95);
+                tooltip
+                    .html(`<strong>Year: ${closest.year}</strong><br/>
+                        Total Popularity: ${Math.round(closest.total).toLocaleString()}<br/>
+                        Avg per Anime: ${Math.round(closest.avg).toLocaleString()}`)
+                    .style("left", (event.pageX + 15) + "px")
+                    .style("top", (event.pageY - 60) + "px");
+            })
+            .on("mouseout", () => {
+                tooltip.transition().duration(200).style("opacity", 0);
+            });
+
+        const guideLine = g.append("line")
+            .attr("class", "cursor-guide")
+            .attr("y1", 0)
+            .attr("y2", height)
+            .attr("stroke", "#aaa")
+            .attr("stroke-dasharray", "4 2")
+            .style("opacity", 0);
+
+        g.select(".hover-rect")
+            .on("mousemove", function(event) {
+                const [mouseX] = d3.pointer(event);
+                const year = Math.round(x.invert(mouseX));
+                const closest = window.popularityByYear.find(d => d.year === year);
+                if (!closest) return;
+
+                tooltip.transition().duration(100).style("opacity", 0.95);
+                tooltip
+                    .html(`<strong>Year: ${year}</strong><br/>
+                        Total Popularity: ${Math.round(closest.total).toLocaleString()}<br/>
+                        Avg per Anime: ${Math.round(closest.avg).toLocaleString()}`)
+                    .style("left", (event.pageX + 15) + "px")
+                    .style("top", (event.pageY - 60) + "px");
+
+                guideLine
+                    .attr("x1", x(year))
+                    .attr("x2", x(year))
+                    .style("opacity", 1);
+            })
+            .on("mouseout", () => {
+                tooltip.transition().duration(200).style("opacity", 0);
+                guideLine.style("opacity", 0);
+            });
+
+        svg.append("text")
+            .attr("x", 600)
+            .attr("y", 40)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "24px")
+            .attr("font-weight", "bold")
+            .attr("fill", "#444")
+            .text("Anime Popularity Over Time");
+
+        // Add legend
+        const legend = svg.append("g")
+            .attr("class", "sceneGroup")
+            .attr("transform", `translate(${margin.left + 20}, ${margin.top + 10})`);
+
+        legend.append("circle")
+            .attr("cx", 0)
+            .attr("cy", 0)
+            .attr("r", 6)
+            .attr("fill", "#2f51a3");
+
+        legend.append("text")
+            .attr("x", 12)
+            .attr("y", 4)
+            .text("Total Popularity")
+            .attr("font-size", "12px")
+            .attr("fill", "#333");
+
+        legend.append("circle")
+            .attr("cx", 0)
+            .attr("cy", 20)
+            .attr("r", 6)
+            .attr("fill", "orange");
+
+        legend.append("text")
+            .attr("x", 12)
+            .attr("y", 24)
+            .text("Average per Anime")
+            .attr("font-size", "12px")
+            .attr("fill", "#333");
+
+
+        showScenePopup("Hover over the chart for more info.");
+    }
 }
 
 // Consider adding a scrolling wheel transition, instead of buttons
@@ -652,28 +847,3 @@ window.addEventListener("resize", () => {
     svg.selectAll("*").remove();
     renderScene(currentScene);
 });
-
-
-// Previous Button Logic
-// d3.select("#prevButton").on("click", () => {
-//     if (currentScene > 0) {
-//         currentScene -= 1;
-//         renderScene(currentScene);
-//     }
-//     else {
-//         currentScene = totalScenes - 1;
-//         renderScene(currentScene);
-//     }
-// });
-
-// // Next Button Logic
-// d3.select("#nextButton").on("click", () => {
-//     if (currentScene < totalScenes - 1) {
-//         currentScene += 1;
-//         renderScene(currentScene);
-//     }
-//     else {
-//         currentScene = 0;
-//         renderScene(currentScene);
-//     }
-// })
